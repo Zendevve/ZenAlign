@@ -1,0 +1,15 @@
+# Exclude documentation files
+ADDON_SUMMARY.txt
+DEVELOPER_NOTES.md
+INSTALL.md
+QUICK_START.txt
+CHANGELOG.md
+
+# Exclude other addon directories
+../Align/
+../MoveAnything/
+
+# Exclude common WoW addon files
+*.bak
+*.tmp
+WTF/
