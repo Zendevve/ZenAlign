@@ -94,6 +94,19 @@ function ZA:ResetFrame(frameName)
 	-- Reset position
 	local position = self:GetModule("Position")
 	if position then
+		-- Force save current state first
+		if ZenAlignDB then
+			-- Manually save to ensure it persists
+			local char = UnitName("player") .. " - " .. GetRealmName()
+			if not ZenAlignDB.char then
+				ZenAlignDB.char = {}
+			end
+			if not ZenAlignDB.char[char] then
+				ZenAlignDB.char[char] = {}
+			end
+			ZenAlignDB.char[char].frames = ZA.db.frames
+		end
+
 		position:ResetPosition(frameName)
 	end
 

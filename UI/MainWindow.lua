@@ -224,11 +224,11 @@ function ZA.UI:CreateFrameList()
 
 					local moveBg = moveBtn:CreateTexture(nil, "BACKGROUND")
 					moveBg:SetAllPoints()
-					moveBg:SetTexture(0.2, 0.2, 0.2, 0.8)
+					moveBg:SetTexture(0, 0.7, 0.9, 0.8)
 
 					local moveHL = moveBtn:CreateTexture(nil, "HIGHLIGHT")
 					moveHL:SetAllPoints()
-					moveHL:SetTexture(0.4, 0.4, 0.4, 0.6)
+					moveHL:SetTexture(0, 0.9, 1, 0.9)
 
 					moveBtn:SetScript("OnClick", function()
 						local fm = ZA:GetModule("FrameManager")
@@ -255,11 +255,11 @@ function ZA.UI:CreateFrameList()
 
 					local hideBg = hideBtn:CreateTexture(nil, "BACKGROUND")
 					hideBg:SetAllPoints()
-					hideBg:SetTexture(0.2, 0.2, 0.2, 0.8)
+					hideBg:SetTexture(0.9, 0.2, 0.2, 0.8)
 
 					local hideHL = hideBtn:CreateTexture(nil, "HIGHLIGHT")
 					hideHL:SetAllPoints()
-					hideHL:SetTexture(0.4, 0.4, 0.4, 0.6)
+					hideHL:SetTexture(1, 0.3, 0.3, 0.9)
 
 					hideBtn:SetScript("OnClick", function()
 						local hide = ZA:GetModule("Hide")
@@ -286,20 +286,31 @@ function ZA.UI:CreateFrameList()
 
 					local resetBg = resetBtn:CreateTexture(nil, "BACKGROUND")
 					resetBg:SetAllPoints()
-					resetBg:SetTexture(0.2, 0.2, 0.2, 0.8)
+					resetBg:SetTexture(1, 0.6, 0, 0.8)
 
 					local resetHL = resetBtn:CreateTexture(nil, "HIGHLIGHT")
 					resetHL:SetAllPoints()
-					resetHL:SetTexture(0.4, 0.4, 0.4, 0.6)
+					resetHL:SetTexture(1, 0.7, 0.1, 0.9)
 
-					resetBtn:SetScript("OnClick", function()
-						ZA:ResetFrame(frameInfo.name)
+					resetBtn.lastClick = 0
+					resetBtn:SetScript("OnClick", function(self)
+						local now = GetTime()
+						if now - self.lastClick < 5 then
+							ZA:ResetFrame(frameInfo.name)
+							ZA:Print("|cffff8800Resetting " .. frameInfo.displayName .. " - reloading...|r")
+							C_Timer.After(0.5, ReloadUI)
+							self.lastClick = 0
+						else
+							self.lastClick = now
+							ZA:Print("|cffff8800Click Reset again to confirm|r")
+							end
 					end)
 
 					resetBtn:SetScript("OnEnter", function(self)
 						GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 						GameTooltip:AddLine("Reset", 1, 1, 1)
-						GameTooltip:AddLine("Reset all modifications", 0.7, 0.7, 0.7)
+						GameTooltip:AddLine("Reset to Blizzard default", 0.7, 0.7, 0.7)
+						GameTooltip:AddLine("(Click twice, will reload)", 1, 0.8, 0)
 						GameTooltip:Show()
 					end)
 
