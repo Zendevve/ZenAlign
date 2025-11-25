@@ -1,0 +1,111 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.blizzard.com/wow/ui/">
+
+    <!-- Load Lua first so functions are available -->
+    <Script file="MainWindow.lua"/>
+
+    <!-- Main Window Frame -->
+    <Frame name="ZenAlignMainWindow" parent="UIParent" movable="true" enableMouse="true" hidden="true">
+        <Size>
+            <AbsDimension x="400" y="500"/>
+        </Size>
+        <Anchors>
+            <Anchor point="CENTER"/>
+        </Anchors>
+        <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background"
+                  edgeFile="Interface\DialogFrame\UI-DialogBox-Border"
+                  tile="true">
+            <BackgroundInsets>
+                <AbsInset left="11" right="12" top="12" bottom="11"/>
+            </BackgroundInsets>
+            <TileSize>
+                <AbsValue val="32"/>
+            </TileSize>
+            <EdgeSize>
+                <AbsValue val="32"/>
+            </EdgeSize>
+        </Backdrop>
+        <Frames>
+            <!-- Title Bar -->
+            <Frame name="$parent_TitleBar">
+                <Size>
+                    <AbsDimension x="0" y="30"/>
+                </Size>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="TOPLEFT">
+                        <Offset x="15" y="-15"/>
+                    </Anchor>
+                    <Anchor point="TOPRIGHT" relativeTo="$parent" relativePoint="TOPRIGHT">
+                        <Offset x="-15" y="-15"/>
+                    </Anchor>
+                </Anchors>
+                <Layers>
+                    <Layer level="ARTWORK">
+                        <FontString name="$parent_Text" inherits="GameFontNormalLarge">
+                            <Anchors>
+                                <Anchor point="LEFT"/>
+                            </Anchors>
+                        </FontString>
+                    </Layer>
+                </Layers>
+            </Frame>
+
+            <!-- Close Button -->
+            <Button name="$parent_CloseButton" inherits="UIPanelCloseButton">
+                <Anchors>
+                    <Anchor point="TOPRIGHT" relativeTo="$parent" relativePoint="TOPRIGHT">
+                        <Offset x="-5" y="-5"/>
+                    </Anchor>
+                </Anchors>
+            </Button>
+
+            <!-- Grid Controls Frame -->
+            <Frame name="$parent_GridControls">
+                <Size>
+                    <AbsDimension x="0" y="100"/>
+                </Size>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="$parent_TitleBar" relativePoint="BOTTOMLEFT">
+                        <Offset x="0" y="-10"/>
+                    </Anchor>
+                    <Anchor point="TOPRIGHT" relativeTo="$parent_TitleBar" relativePoint="BOTTOMRIGHT">
+                        <Offset x="0" y="-10"/>
+                    </Anchor>
+                </Anchors>
+            </Frame>
+
+            <!-- Frame List Scroll Frame -->
+            <ScrollFrame name="$parent_FrameListScroll" inherits="UIPanelScrollFrameTemplate">
+                <Size>
+                    <AbsDimension x="360" y="300"/>
+                </Size>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="$parent_GridControls" relativePoint="BOTTOMLEFT">
+                        <Offset x="0" y="-10"/>
+                    </Anchor>
+                </Anchors>
+                <ScrollChild>
+                    <Frame name="$parent_Child">
+                        <Size>
+                            <AbsDimension x="340" y="300"/>
+                        </Size>
+                    </Frame>
+                </ScrollChild>
+            </ScrollFrame>
+
+        </Frames>
+        <Scripts>
+            <OnLoad>
+                ZenAlignUI_OnLoad(self)
+            </OnLoad>
+            <OnDragStart>
+                self:StartMoving()
+            </OnDragStart>
+            <OnDragStop>
+                self:StopMovingOrSizing()
+            </OnDragStop>
+        </Scripts>
+    </Frame>
+
+</Ui>

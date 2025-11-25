@@ -1,0 +1,26 @@
+## Interface: 30300
+## Title: ZenAlign
+## Version: 1.0.0
+## Author: Zendevve
+## Notes: Pixel-perfect UI positioning with grid snapping. Combines alignment grid with frame movement.
+## SavedVariables: ZenAlignDB
+
+# Core
+Core\Init.lua
+
+# Data
+Data\Defaults.lua
+Data\FrameList.lua
+
+# Modules
+Modules\Grid.lua
+Modules\Coordinates.lua
+Modules\GridSnap.lua
+Modules\FrameManager.lua
+Modules\Position.lua
+Modules\Scale.lua
+Modules\Alpha.lua
+Modules\Visibility.lua
+
+# UI
+UI\MainWindow.xml
