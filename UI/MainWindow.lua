@@ -1,13 +1,12 @@
 --[[
-	Main Window UI - FIXED LAYOUT
-	Controls at top, no whitespace, ASCII arrows
+	Main Window UI - REBUILT FROM SCRATCH
+	Simple, clean, functional
 ]]
 
 local ZA = ZenAlign
 ZA.UI = {}
 
 local mainWindow
-local currentTab = "all"
 local searchText = ""
 local collapsedCategories = {}
 
@@ -33,22 +32,18 @@ function ZA.UI:Initialize()
 		mainWindow = ZenAlignMainWindow
 	end
 
-	self:CreateControlsPanel()  -- Controls FIRST (top)
+	self:CreateGridControls()
 	self:CreateSearchBox()
-	self:CreateTabs()
 	self:CreateFrameList()
 end
 
--- Grid controls at TOP (primary feature)
-function ZA.UI:CreateControlsPanel()
+-- Grid controls (in GridControls panel)
+function ZA.UI:CreateGridControls()
 	local parent = ZenAlignMainWindow_GridControls
 	if not parent then return end
 
-	-- Compact horizontal layout
-	local xOff = 10
-
 	local gridBtn = CreateFrame("CheckButton", "ZA_GridToggle", parent, "UICheckButtonTemplate")
-	gridBtn:SetPoint("TOPLEFT", xOff, -5)
+	gridBtn:SetPoint("TOPLEFT", 10, -8)
 	gridBtn:SetSize(20, 20)
 	gridBtn:SetChecked(ZA.db.gridEnabled)
 	local gridText = getglobal("ZA_GridToggleText")
@@ -60,10 +55,9 @@ function ZA.UI:CreateControlsPanel()
 			self:SetChecked(grid:IsShowing())
 		end
 	end)
-	xOff = xOff + 70
 
 	local snapBtn = CreateFrame("CheckButton", "ZA_SnapToggle", parent, "UICheckButtonTemplate")
-	snapBtn:SetPoint("TOPLEFT", xOff, -5)
+	snapBtn:SetPoint("LEFT", gridBtn, "RIGHT", 40, 0)
 	snapBtn:SetSize(20, 20)
 	snapBtn:SetChecked(ZA.db.snapEnabled)
 	local snapText = getglobal("ZA_SnapToggleText")
@@ -72,18 +66,17 @@ function ZA.UI:CreateControlsPanel()
 		ZA.db.snapEnabled = self:GetChecked()
 	end)
 
-	-- Grid size on right
-	local sizeLabel = parent:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-	sizeLabel:SetPoint("TOPRIGHT", -10, -8)
+	local sizeLabel = parent:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+	sizeLabel:SetPoint("TOPRIGHT", -10, -12)
 	sizeLabel:SetText("Size: " .. (ZA.db.gridSize or 32))
 	parent.sizeLabel = sizeLabel
 
 	local sizeSlider = CreateFrame("Slider", "ZA_GridSizeSlider", parent, "OptionsSliderTemplate")
-	sizeSlider:SetPoint("RIGHT", sizeLabel, "LEFT", -5, 0)
+	sizeSlider:SetPoint("RIGHT", sizeLabel, "LEFT", -10, 0)
 	sizeSlider:SetMinMaxValues(8, 128)
 	sizeSlider:SetValue(ZA.db.gridSize or 32)
 	sizeSlider:SetValueStep(8)
-	sizeSlider:SetWidth(80)
+	sizeSlider:SetWidth(100)
 	getglobal(sizeSlider:GetName() .. "Low"):SetText("")
 	getglobal(sizeSlider:GetName() .. "High"):SetText("")
 	getglobal(sizeSlider:GetName() .. "Text"):SetText("")
@@ -96,12 +89,13 @@ function ZA.UI:CreateControlsPanel()
 	end)
 end
 
+-- Search box
 function ZA.UI:CreateSearchBox()
 	local parent = ZenAlignMainWindow
 
 	local searchBox = CreateFrame("EditBox", "ZA_SearchBox", parent)
-	searchBox:SetSize(340, 25)
-	searchBox:SetPoint("TOPLEFT", 15, -35)  -- Right under title
+	searchBox:SetSize(340, 24)
+	searchBox:SetPoint("TOP", parent, "TOP", 0, -78)
 	searchBox:SetFontObject("ChatFontNormal")
 	searchBox:SetAutoFocus(false)
 	searchBox:SetMaxLetters(50)
@@ -136,62 +130,16 @@ function ZA.UI:CreateSearchBox()
 
 	searchBox:SetScript("OnEditFocusGained", function(self)
 		placeholder:Hide()
-		border:SetBackdropBorderColor(1, 0.8, 0, 1)
 	end)
 
 	searchBox:SetScript("OnEditFocusLost", function(self)
 		if self:GetText() == "" then
 			placeholder:Show()
 		end
-		border:SetBackdropBorderColor(0.6, 0.6, 0.6, 0.8)
 	end)
 end
 
-function ZA.UI:CreateTabs()
-	local parent = ZenAlignMainWindow
-
-	local allTab = CreateFrame("Button", "ZA_AllTab", parent)
-	allTab:SetSize(80, 22)
-	allTab:SetPoint("TOPLEFT", 15, -65)  -- Right under search
-	allTab:SetNormalFontObject("GameFontNormalSmall")
-	allTab:SetText("All Frames")
-	allTab:SetScript("OnClick", function()
-		currentTab = "all"
-		ZA.UI:UpdateTabs()
-		ZA.UI:CreateFrameList()
-	end)
-
-	local modTab = CreateFrame("Button", "ZA_ModTab", parent)
-	modTab:SetSize(80, 22)
-	modTab:SetPoint("LEFT", allTab, "RIGHT", 5, 0)
-	modTab:SetNormalFontObject("GameFontNormalSmall")
-	modTab:SetText("Modified")
-	modTab:SetScript("OnClick", function()
-		currentTab = "modified"
-		ZA.UI:UpdateTabs()
-		ZA.UI:CreateFrameList()
-	end)
-
-	parent.allTab = allTab
-	parent.modTab = modTab
-
-	self:UpdateTabs()
-end
-
-function ZA.UI:UpdateTabs()
-	local parent = ZenAlignMainWindow
-	local allTab = parent.allTab
-	local modTab = parent.modTab
-
-	if currentTab == "all" then
-		allTab:GetFontString():SetTextColor(1, 1, 1)
-		modTab:GetFontString():SetTextColor(0.6, 0.6, 0.6)
-	else
-		modTab:GetFontString():SetTextColor(1, 1, 1)
-		allTab:GetFontString():SetTextColor(0.6, 0.6, 0.6)
-	end
-end
-
+-- Frame list
 function ZA.UI:CreateFrameList()
 	local scrollChild = ZenAlignMainWindow_FrameListScroll_Child
 	if not scrollChild then return end
@@ -202,7 +150,7 @@ function ZA.UI:CreateFrameList()
 		child:SetParent(nil)
 	end
 
-	local yOffset = -10
+	local yOffset = -5
 	local categories = ZA:GetCategories()
 
 	for _, category in ipairs(categories) do
@@ -211,25 +159,23 @@ function ZA.UI:CreateFrameList()
 
 		for _, frameInfo in ipairs(frames) do
 			local matchesSearch = searchText == "" or frameInfo.displayName:lower():find(searchText, 1, true)
-			local isModified = ZA.db.frames[frameInfo.name] ~= nil
-			local matchesTab = currentTab == "all" or (currentTab == "modified" and isModified)
-
-			if matchesSearch and matchesTab then
+			if matchesSearch then
 				table.insert(filteredFrames, frameInfo)
 			end
 		end
 
 		if #filteredFrames > 0 then
+			-- Category header
 			local headerBtn = CreateFrame("Button", nil, scrollChild)
-			headerBtn:SetSize(340, 22)
-			headerBtn:SetPoint("TOPLEFT", 5, yOffset)
+			headerBtn:SetSize(330, 20)
+			headerBtn:SetPoint("TOPLEFT", 10, yOffset)
 			headerBtn:SetNormalFontObject("GameFontNormal")
 
 			local isCollapsed = collapsedCategories[category]
-			local arrow = isCollapsed and ">" or "v"  -- ASCII arrows!
+			local arrow = isCollapsed and ">" or "v"
 			headerBtn:SetText(arrow .. " " .. category)
 			headerBtn:GetFontString():SetJustifyH("LEFT")
-			headerBtn:GetFontString():SetPoint("LEFT", 5, 0)
+			headerBtn:GetFontString():SetPoint("LEFT", 0, 0)
 			headerBtn:GetFontString():SetTextColor(1, 0.82, 0)
 
 			headerBtn:SetScript("OnClick", function()
@@ -237,19 +183,19 @@ function ZA.UI:CreateFrameList()
 				ZA.UI:CreateFrameList()
 			end)
 
-			yOffset = yOffset - 24
+			yOffset = yOffset - 22
 
 			if not isCollapsed then
 				for _, frameInfo in ipairs(filteredFrames) do
 					local isModified = ZA.db.frames[frameInfo.name] ~= nil
 
 					local btn = CreateFrame("Button", nil, scrollChild)
-					btn:SetSize(330, 22)
-					btn:SetPoint("TOPLEFT", 15, yOffset)
-					btn:SetNormalFontObject("GameFontHighlight")
-					btn:SetText((isModified and "+ " or "   ") .. frameInfo.displayName)
+					btn:SetSize(320, 20)
+					btn:SetPoint("TOPLEFT", 20, yOffset)
+					btn:SetNormalFontObject("GameFontHighlightSmall")
+					btn:SetText(frameInfo.displayName)
 					btn:GetFontString():SetJustifyH("LEFT")
-					btn:GetFontString():SetPoint("LEFT", 5, 0)
+					btn:GetFontString():SetPoint("LEFT", 0, 0)
 
 					if isModified then
 						btn:GetFontString():SetTextColor(0.5, 1, 0.5)
@@ -257,11 +203,11 @@ function ZA.UI:CreateFrameList()
 
 					local bg = btn:CreateTexture(nil, "BACKGROUND")
 					bg:SetAllPoints()
-					bg:SetTexture(0.15, 0.15, 0.15, isModified and 0.5 or 0.3)
+					bg:SetTexture(0.15, 0.15, 0.15, 0.4)
 
 					local hl = btn:CreateTexture(nil, "HIGHLIGHT")
 					hl:SetAllPoints()
-					hl:SetTexture(0.3, 0.3, 0.3, 0.6)
+					hl:SetTexture(0.3, 0.3, 0.3, 0.5)
 
 					btn:SetScript("OnClick", function()
 						local fm = ZA:GetModule("FrameManager")
@@ -281,7 +227,7 @@ function ZA.UI:CreateFrameList()
 						GameTooltip:Hide()
 					end)
 
-					yOffset = yOffset - 24
+					yOffset = yOffset - 22
 				end
 
 				yOffset = yOffset - 3

@@ -1,6 +1,6 @@
 --[[
 	GridSnap Module
-	Improved snap algorithm for ALL grid sizes
+	FIXED snap algorithm
 ]]
 
 local ZA = ZenAlign
@@ -81,14 +81,14 @@ function GridSnap:IsEnabled()
 	return true
 end
 
--- IMPROVED snap algorithm - handles ALL grid sizes perfectly
+-- PROPER snap algorithm - fixed for all grid sizes
 function GridSnap:SnapToGrid(x, y, gridSize)
 	gridSize = gridSize or ZA.db.gridSize or 32
 
-	-- Round to nearest multiple of gridSize
-	-- Using explicit rounding to avoid floating-point issues
-	local snappedX = floor((x + gridSize / 2) / gridSize) * gridSize
-	local snappedY = floor((y + gridSize / 2) / gridSize) * gridSize
+	-- The correct formula: divide by gridSize, add 0.5, floor, then multiply back
+	-- This rounds to the nearest grid intersection
+	local snappedX = floor((x / gridSize) + 0.5) * gridSize
+	local snappedY = floor((y / gridSize) + 0.5) * gridSize
 
 	return snappedX, snappedY
 end

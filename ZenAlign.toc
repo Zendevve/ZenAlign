@@ -20,6 +20,7 @@ Modules\FrameManager.lua
 Modules\Position.lua
 Modules\Scale.lua
 Modules\Alpha.lua
+Modules\Hide.lua
 Modules\Visibility.lua
 
 # UI
