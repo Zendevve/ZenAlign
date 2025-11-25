@@ -81,6 +81,54 @@ function ZA:InitDB()
 	self:Debug("Database initialized")
 end
 
+-- Reset a frame to defaults
+function ZA:ResetFrame(frameName)
+	if not frameName then return end
+
+	local frame = _G[frameName]
+	if not frame then
+		self:Print("Frame '%s' not found", frameName)
+		return
+	end
+
+	-- Reset position
+	local position = self:GetModule("Position")
+	if position then
+		position:ResetPosition(frameName)
+	end
+
+	-- Reset scale
+	local scale = self:GetModule("Scale")
+	if scale then
+		scale:ResetScale(frameName)
+	end
+
+	-- Reset alpha
+	local alpha = self:GetModule("Alpha")
+	if alpha then
+		alpha:ResetAlpha(frameName)
+	end
+
+	-- Reset hide
+	local hide = self:GetModule("Hide")
+	if hide then
+		hide:ResetHide(frameName)
+	end
+
+	-- Hide mover
+	local frameManager = self:GetModule("FrameManager")
+	if frameManager then
+		frameManager:HideMover(frameName)
+	end
+
+	self:Print("Reset frame: %s", frameName)
+
+	-- Refresh UI
+	if self.UI and self.UI.Refresh then
+		self.UI:Refresh()
+	end
+end
+
 -- Event frame
 local eventFrame = CreateFrame("Frame")
 eventFrame:RegisterEvent("ADDON_LOADED")

@@ -64,6 +64,24 @@ function Hide:ToggleHidden(frameName)
 	end
 end
 
+-- Reset hide state
+function Hide:ResetHide(frameName)
+	local frame = _G[frameName]
+	if not frame then return false end
+
+	if ZA.db.frames[frameName] then
+		ZA.db.frames[frameName].hidden = nil
+	end
+
+	frame:Show()
+	return true
+end
+
+-- Toggle hide (alias for ToggleHidden)
+function Hide:ToggleHide(frameName)
+	return self:ToggleHidden(frameName)
+end
+
 -- Restore hidden frames on load
 function Hide:RestoreHiddenFrames()
 	for frameName, data in pairs(ZA.db.frames) do

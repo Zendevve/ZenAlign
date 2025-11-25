@@ -189,45 +189,134 @@ function ZA.UI:CreateFrameList()
 				for _, frameInfo in ipairs(filteredFrames) do
 					local isModified = ZA.db.frames[frameInfo.name] ~= nil
 
-					local btn = CreateFrame("Button", nil, scrollChild)
-					btn:SetSize(320, 20)
-					btn:SetPoint("TOPLEFT", 20, yOffset)
-					btn:SetNormalFontObject("GameFontHighlightSmall")
-					btn:SetText(frameInfo.displayName)
-					btn:GetFontString():SetJustifyH("LEFT")
-					btn:GetFontString():SetPoint("LEFT", 0, 0)
+					-- Row container
+					local row = CreateFrame("Frame", nil, scrollChild)
+					row:SetSize(340, 22)
+					row:SetPoint("TOPLEFT", 20, yOffset)
 
-					if isModified then
-						btn:GetFontString():SetTextColor(0.5, 1, 0.5)
-					end
-
-					local bg = btn:CreateTexture(nil, "BACKGROUND")
+					-- Background
+					local bg = row:CreateTexture(nil, "BACKGROUND")
 					bg:SetAllPoints()
 					bg:SetTexture(0.15, 0.15, 0.15, 0.4)
 
-					local hl = btn:CreateTexture(nil, "HIGHLIGHT")
+					-- Highlight
+					local hl = row:CreateTexture(nil, "HIGHLIGHT")
 					hl:SetAllPoints()
 					hl:SetTexture(0.3, 0.3, 0.3, 0.5)
+					hl:Hide()
 
-					btn:SetScript("OnClick", function()
+					-- Frame name (left side, clickable for selection)
+					local nameText = row:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+					nameText:SetPoint("LEFT", 5, 0)
+					nameText:SetText(frameInfo.displayName)
+					nameText:SetJustifyH("LEFT")
+
+					if isModified then
+						nameText:SetTextColor(0.5, 1, 0.5)
+					end
+
+					-- Move button
+					local moveBtn = CreateFrame("Button", nil, row)
+					moveBtn:SetSize(20, 18)
+					moveBtn:SetPoint("RIGHT", -67, 0)
+					moveBtn:SetNormalFontObject("GameFontNormalSmall")
+					moveBtn:SetText("M")
+
+					local moveBg = moveBtn:CreateTexture(nil, "BACKGROUND")
+					moveBg:SetAllPoints()
+					moveBg:SetTexture(0.2, 0.2, 0.2, 0.8)
+
+					local moveHL = moveBtn:CreateTexture(nil, "HIGHLIGHT")
+					moveHL:SetAllPoints()
+					moveHL:SetTexture(0.4, 0.4, 0.4, 0.6)
+
+					moveBtn:SetScript("OnClick", function()
 						local fm = ZA:GetModule("FrameManager")
-						if fm then fm:ShowMover(frameInfo.name) end
+						if fm then fm:ToggleMover(frameInfo.name) end
 					end)
 
-					btn:SetScript("OnEnter", function(self)
+					moveBtn:SetScript("OnEnter", function(self)
 						GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-						GameTooltip:AddLine(frameInfo.displayName, 1, 1, 1)
-						if isModified then
-							GameTooltip:AddLine("Custom position", 0, 1, 0)
-						end
+						GameTooltip:AddLine("Move", 1, 1, 1)
+						GameTooltip:AddLine("Toggle mover", 0.7, 0.7, 0.7)
 						GameTooltip:Show()
 					end)
 
-					btn:SetScript("OnLeave", function()
+					moveBtn:SetScript("OnLeave", function()
 						GameTooltip:Hide()
 					end)
 
-					yOffset = yOffset - 22
+					-- Hide button
+					local hideBtn = CreateFrame("Button", nil, row)
+					hideBtn:SetSize(20, 18)
+					hideBtn:SetPoint("RIGHT", -45, 0)
+					hideBtn:SetNormalFontObject("GameFontNormalSmall")
+					hideBtn:SetText("H")
+
+					local hideBg = hideBtn:CreateTexture(nil, "BACKGROUND")
+					hideBg:SetAllPoints()
+					hideBg:SetTexture(0.2, 0.2, 0.2, 0.8)
+
+					local hideHL = hideBtn:CreateTexture(nil, "HIGHLIGHT")
+					hideHL:SetAllPoints()
+					hideHL:SetTexture(0.4, 0.4, 0.4, 0.6)
+
+					hideBtn:SetScript("OnClick", function()
+						local hide = ZA:GetModule("Hide")
+						if hide then hide:ToggleHide(frameInfo.name) end
+					end)
+
+					hideBtn:SetScript("OnEnter", function(self)
+						GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+						GameTooltip:AddLine("Hide", 1, 1, 1)
+						GameTooltip:AddLine("Toggle visibility", 0.7, 0.7, 0.7)
+						GameTooltip:Show()
+					end)
+
+					hideBtn:SetScript("OnLeave", function()
+						GameTooltip:Hide()
+					end)
+
+					-- Reset button
+					local resetBtn = CreateFrame("Button", nil, row)
+					resetBtn:SetSize(40, 18)
+					resetBtn:SetPoint("RIGHT", -3, 0)
+					resetBtn:SetNormalFontObject("GameFontNormalSmall")
+					resetBtn:SetText("Reset")
+
+					local resetBg = resetBtn:CreateTexture(nil, "BACKGROUND")
+					resetBg:SetAllPoints()
+					resetBg:SetTexture(0.2, 0.2, 0.2, 0.8)
+
+					local resetHL = resetBtn:CreateTexture(nil, "HIGHLIGHT")
+					resetHL:SetAllPoints()
+					resetHL:SetTexture(0.4, 0.4, 0.4, 0.6)
+
+					resetBtn:SetScript("OnClick", function()
+						ZA:ResetFrame(frameInfo.name)
+					end)
+
+					resetBtn:SetScript("OnEnter", function(self)
+						GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+						GameTooltip:AddLine("Reset", 1, 1, 1)
+						GameTooltip:AddLine("Reset all modifications", 0.7, 0.7, 0.7)
+						GameTooltip:Show()
+					end)
+
+					resetBtn:SetScript("OnLeave", function()
+						GameTooltip:Hide()
+					end)
+
+					-- Row hover effect
+					row:SetScript("OnEnter", function(self)
+						hl:Show()
+					end)
+
+					row:SetScript("OnLeave", function(self)
+						hl:Hide()
+					end)
+
+					yOffset = yOffset - 24
 				end
 
 				yOffset = yOffset - 3
