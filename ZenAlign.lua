@@ -69,19 +69,6 @@ local function OnPlayerEnteringWorld(self, event)
 	end
 
 	if ZenAlign.Alpha then
-		ZenAlign.Alpha:ApplyAll()
-	end
-
-	if ZenAlign.Visibility then
-		ZenAlign.Visibility:ApplyAll()
-	end
-
-	-- Sync all saved frames
-	if ZenAlign.API then
-		ZenAlign.API:SyncAll()
-	end
-
-	-- Unregister event (only need once)
 	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 end
 

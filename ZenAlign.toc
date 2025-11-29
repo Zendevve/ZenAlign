@@ -18,6 +18,7 @@ Modules\Position.lua
 Modules\Scale.lua
 Modules\Alpha.lua
 Modules\Visibility.lua
+Modules\Editor.lua
 
 ## Localization
 Localization\enUS.lua
