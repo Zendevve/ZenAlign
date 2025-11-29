@@ -125,4 +125,101 @@ function Editor:Enable()
 			local mover = CreateMover(name, frame)
 
 
+			-- Match size
+			mover:SetSize(frame:GetWidth(), frame:GetHeight())
+
+			-- Match position
+			mover:ClearAllPoints()
+			local point, relativeTo, relativePoint, xOfs, yOfs = frame:GetPoint()
+
+			-- Check if frame is anchored to mover (prevent self-anchoring loop)
+			if relativeTo == mover or (type(relativeTo) == "table" and relativeTo:GetName() == mover:GetName()) then
+				-- Frame is already anchored to mover, use absolute position
+				local left = frame:GetLeft()
+				local bottom = frame:GetBottom()
+				local scale = frame:GetEffectiveScale() / UIParent:GetEffectiveScale()
+				if left and bottom then
+					mover:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", left * scale, bottom * scale)
+				else
+					mover:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+				end
+			elseif point then
+				-- If relativeTo is an object, getting its name might be tricky if it's not global
+				-- Safest is to use GetLeft/GetBottom to anchor to UIParent
+				local left = frame:GetLeft()
+				local bottom = frame:GetBottom()
+				local scale = frame:GetEffectiveScale() / UIParent:GetEffectiveScale()
+				if left and bottom then
+					mover:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", left * scale, bottom * scale)
+				else
+					mover:SetPoint(point, relativeTo, relativePoint, xOfs, yOfs)
+				end
+			else
+				mover:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+			end
+
+			mover:Show()
+
+			-- Anchor frame to mover?
+			-- If we anchor frame to mover, frame moves with mover.
+			-- This is the MoveAnything way.
+			frame:ClearAllPoints()
+			frame:SetPoint("CENTER", mover, "CENTER", 0, 0)
+			-- Also need to handle frame level so mover is on top? Mover is DIALOG 100, should be fine.
+		end
+	end
+end
+
+function Editor:Disable()
+	if not isEditing then return end
+	isEditing = false
+	ZenAlign:Print("Edit Mode DISABLED. Positions saved.")
+
+	for name, mover in pairs(movers) do
+		if mover:IsShown() then
+			local frame = mover.targetFrame
+
+			-- Save position from MOVER (since frame is anchored to mover)
+			if ZenAlign.Position then
+				-- Let's manually save
+				local db = ZenAlign.DB:Get("frames", name) or {}
+				local point, relativeTo, relativePoint, xOfs, yOfs = mover:GetPoint()
+
+				-- Normalize to UIParent
+				local left = mover:GetLeft()
+				local bottom = mover:GetBottom()
+				if left and bottom then
+					db.point = "BOTTOMLEFT"
+					db.relativeTo = "UIParent"
+					db.relativePoint = "BOTTOMLEFT"
+					db.x = left
+					db.y = bottom
+					ZenAlign.DB:Set("frames", name, db)
+				end
+			end
+
+			-- Restore frame anchor to UIParent (using saved pos)
+			local restored = false
+			if ZenAlign.Position then
+				restored = ZenAlign.Position:Restore(frame)
+			end
+
+			-- Fallback: If restore failed, anchor to UIParent using current position
+			if not restored then
+				local left = frame:GetLeft()
+				local bottom = frame:GetBottom()
+				local scale = frame:GetEffectiveScale() / UIParent:GetEffectiveScale()
+				frame:ClearAllPoints()
+				if left and bottom then
+					frame:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", left * scale, bottom * scale)
+				else
+					frame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+				end
+			end
+
+			mover:Hide()
+		end
+	end
+end
+
 return Editor
