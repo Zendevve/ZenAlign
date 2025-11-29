@@ -165,12 +165,6 @@ function FrameManager:RegisterFrame(frameName, handlerName)
 		frame:SetMovable(true)
 		frame:SetUserPlaced(true)
 	end
-
-	if frame.SetClampedToScreen then
-		frame:SetClampedToScreen(false)
-	end
-
-	-- Register for drag
 	if handler.RegisterForDrag then
 		handler:RegisterForDrag("LeftButton")
 	end
