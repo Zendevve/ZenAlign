@@ -71,6 +71,11 @@ local function OnDragStart(self)
 		frameToMove.ZA_GridWasHidden = true
 	end
 
+	-- Force movable state if somehow lost
+	if not frameToMove:IsMovable() then
+		frameToMove:SetMovable(true)
+	end
+
 	frameToMove:StartMoving()
 	frameToMove.ZA_IsMoving = true
 	ZenAlign:DebugPrint("Drag start:", frameToMove:GetName())
