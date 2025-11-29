@@ -23,35 +23,27 @@ end
 
 -- Register default movable frames
 function FrameManager:RegisterDefaultFrames()
-	-- Player & Target
-	self:RegisterFrame("PlayerFrame")
-	self:RegisterFrame("TargetFrame")
+	local count = 0
 
-	-- Character & Friends
-	self:RegisterFrame("CharacterFrame", "PaperDollFrame")
-	self:RegisterFrame("CharacterFrame", "ReputationFrame")
-	self:RegisterFrame("CharacterFrame", "TokenFrame")
-	self:RegisterFrame("CharacterFrame", "SkillFrame")
-	self:RegisterFrame("CharacterFrame", "PetPaperDollFrameCompanionFrame")
-
-	-- Interface
-	self:RegisterFrame("SpellBookFrame")
-	self:RegisterFrame("QuestLogFrame")
-	self:RegisterFrame("FriendsFrame")
-	self:RegisterFrame("PVPParentFrame")
-	self:RegisterFrame("LFGParentFrame")
-	self:RegisterFrame("GameMenuFrame")
-	self:RegisterFrame("GossipFrame")
-	self:RegisterFrame("DressUpFrame")
-	self:RegisterFrame("QuestFrame")
-	self:RegisterFrame("MerchantFrame")
-	self:RegisterFrame("HelpFrame")
-	self:RegisterFrame("MailFrame")
-	self:RegisterFrame("BankFrame")
-	self:RegisterFrame("LootFrame")
-	self:RegisterFrame("TradeFrame")
-
-	ZenAlign:DebugPrint("Registered default frames")
+	-- Use imported database if available
+	if ZenAlign.Data and ZenAlign.Data.Frames then
+		for _, entry in ipairs(ZenAlign.Data.Frames) do
+			if self:RegisterFrame(entry.name) then
+				count = count + 1
+			end
+		end
+		ZenAlign:DebugPrint("Registered " .. count .. " frames from database")
+	else
+		-- Fallback to hardcoded list
+		self:RegisterFrame("PlayerFrame")
+		self:RegisterFrame("TargetFrame")
+		self:RegisterFrame("CharacterFrame")
+		self:RegisterFrame("SpellBookFrame")
+		self:RegisterFrame("QuestLogFrame")
+		self:RegisterFrame("FriendsFrame")
+		self:RegisterFrame("GameMenuFrame")
+		ZenAlign:DebugPrint("Registered default frames (fallback)")
+	end
 end
 
 -- Event Handlers (Local functions to avoid global namespace pollution)
