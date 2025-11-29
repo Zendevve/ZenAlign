@@ -76,6 +76,11 @@ local function OnPlayerEnteringWorld(self, event)
 		ZenAlign.Visibility:ApplyAll()
 	end
 
+	-- Initialize virtual movers
+	if ZenAlign.VirtualMovers then
+		ZenAlign.VirtualMovers:Init()
+	end
+
 	-- Initialize editor
 	if ZenAlign.Editor then
 		ZenAlign.Editor:Init()

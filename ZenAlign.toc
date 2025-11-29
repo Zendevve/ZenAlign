@@ -19,6 +19,7 @@ Modules\Scale.lua
 Modules\Alpha.lua
 Modules\Visibility.lua
 Data\Frames.lua
+Modules\VirtualMovers.lua
 Modules\Editor.lua
 
 ## Localization
