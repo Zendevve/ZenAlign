@@ -21,8 +21,11 @@ function VirtualMovers:CreateVirtualMover(name, displayName, width, height, anch
 	frame:SetSize(width, height)
 	frame:SetPoint(anchorPoint, relativeTo, relativePoint, x, y)
 
-	-- Virtual movers are usually invisible containers
-	-- But for ZenAlign, they need to be interactable via FrameManager
+	-- Virtual movers need to be shown (but invisible) so Editor can interact with them
+	frame:Show()
+	frame:EnableMouse(false) -- They're containers, not clickable themselves
+	frame:SetMovable(true)
+	frame:RegisterForDrag("LeftButton")
 
 	-- Store metadata
 	frame.ZA_IsVirtual = true
