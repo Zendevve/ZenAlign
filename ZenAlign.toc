@@ -1,0 +1,26 @@
+## Interface: 30300
+## Title: ZenAlign
+## Version: 1.0.0
+## Author: YourName
+## Notes: Ultimate UI alignment addon with grid snapping - combines Align, BlizzMove, and MoveAnything
+## SavedVariables: ZenAlignDB
+
+## Core
+Config.lua
+Database.lua
+Core\Utils.lua
+
+## Modules
+Modules\Grid.lua
+Modules\SnapEngine.lua
+Modules\FrameManager.lua
+Modules\Position.lua
+Modules\Scale.lua
+Modules\Alpha.lua
+Modules\Visibility.lua
+
+## Localization
+Localization\enUS.lua
+
+## Main
+ZenAlign.lua
