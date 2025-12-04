@@ -99,6 +99,8 @@ end
 
 -- Release a mover back to pool
 function Mover:ReleaseMover(mover)
+    local frameName = mover.frameName
+
     mover:Hide()
     mover:ClearAllPoints()
     mover.targetFrame = nil
@@ -107,7 +109,9 @@ function Mover:ReleaseMover(mover)
     mover.inUse = false
     mover.originalPoints = nil
 
-    self.movers[mover.frameName] = nil
+    if frameName then
+        self.movers[frameName] = nil
+    end
 end
 
 -- Attach mover to a frame
