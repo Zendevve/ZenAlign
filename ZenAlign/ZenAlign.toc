@@ -1,0 +1,29 @@
+## Interface: 30300
+## Title: ZenAlign
+## Notes: Move, align, and snap UI elements to a grid with precision.
+## Author: Zendevve
+## Version: 0.0.5
+## SavedVariables: ZenAlignDB
+## SavedVariablesPerCharacter: ZenAlignCharDB
+
+# Localization
+Localization\enUS.lua
+
+# Core
+Core\Utils.lua
+Core\Config.lua
+Core\Core.lua
+
+# Data
+Data\Frames.lua
+
+# Modules
+Modules\Grid.lua
+Modules\Snap.lua
+Modules\Mover.lua
+Modules\Position.lua
+Modules\Visibility.lua
+
+# UI
+UI\Browser.lua
+UI\Editor.lua
